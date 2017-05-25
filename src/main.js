@@ -13,8 +13,8 @@ var battSize = 0;
 var netSize = 0;
 var changeFlag = 0;
 var _shell = []; //存储炮弹对象
-var _net = [];
-var _coin = [];
+var _net = [];  //渔网
+var _coin = [];	//金币数量
 var score = 500;
 var overFlag = false;
 var sources = [
@@ -69,13 +69,15 @@ document.body.onload = game;
  //存储图片链接信息的关联数组  
 function game(){
 	bgImg= new Image();
-	bgImg.src = "images/bg2.png";
 	cvswidth = canvas.width;
 	cvsheight = canvas.height;
 	lastTime = Date.now();
 	deltaTime = 0;
-	battery = new batteryObj(batImg[battSize].src,batImg[battSize].x,batImg[battSize].y,batImg[battSize].w,batImg[battSize].h);
-	gameloop();
+	bgImg.onload = function(){
+		battery = new batteryObj(batImg[battSize].src,batImg[battSize].x,batImg[battSize].y,batImg[battSize].w,batImg[battSize].h);
+		gameloop();
+	};
+	bgImg.src = "images/bg2.png";
 }
 function gameloop(){	//游戏循环，刷新界面
 	requestAnimFrame(gameloop);
