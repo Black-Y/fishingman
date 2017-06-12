@@ -11,12 +11,10 @@ function shellObj(img,x,y,w,h,m){
 	this.shut = false;
 }
 shellObj.prototype.draw = function(){
-	var img = new Image();
-	img.src = this.img;
 	ctx.save();
 	ctx.translate(this.x, this.y);
 	ctx.rotate(this.rotate);
-	ctx.drawImage(img,-this.w/2, -this.h);
+	ctx.drawImage(this.img,-this.w/2, -this.h);
 	ctx.restore();
 }; 
 shellObj.prototype.move = function(){

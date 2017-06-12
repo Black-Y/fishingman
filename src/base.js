@@ -14,6 +14,25 @@ var util = {
 	        images[src].src = sources[src];  
 	    }  
 	},
+	loadImage : function(sources,callback){
+		var len;
+		var images = {};
+		var num = 0;
+		var count = 0;
+	    for(var imgObj in sources){
+    		images[imgObj] = new Array();
+	    	for(var i = 0,len = sources[imgObj].length;i<len;i++){
+	    		num++;
+	    		images[imgObj][i] = new Image();
+	    		images[imgObj][i].onload = function(){
+					if(++count >= num){
+	    				callback(images);
+					}
+	    		};
+	    		images[imgObj][i].src = sources[imgObj][i].src;
+	    	}
+	    }  
+	},
 		//弧度转角度
 	d2a : function(n){
 		return n * Math.PI / 180;

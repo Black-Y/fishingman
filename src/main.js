@@ -6,6 +6,7 @@ var lastTime;
 var deltaTime;
 var _fish = [];
 var _deadFish = [];
+var imgAll;
 var bar;
 var bgImg;
 var battery; //炮台
@@ -13,16 +14,18 @@ var battSize = 0;
 var netSize = 0;
 var changeFlag = 0;
 var _shell = []; //存储炮弹对象
-var _net = [];  //渔网
-var _coin = [];	//金币数量
+var _net = [];
+var _coin = [];
 var score = 500;
 var overFlag = false;
-var sources = [
+var imgSources = {};
+imgSources.bgImg = [{src: "images/bg2.png"}];
+imgSources.barImg = [
     { src: "images/bottom-bar.png", x: 217.5, y: 674},
     { src: "images/cannon_minus.png", x: 554, y: 710},  
     { src: "images/cannon_plus.png", x: 691, y: 710}
 ];
-var batImg = [
+imgSources.batImg = [
     { src: "images/cannon1.png", x: 642, y: 705, w: 74, h: 74},
     { src: "images/cannon2.png", x: 642, y: 705, w: 74, h: 76},
     { src: "images/cannon3.png", x: 642, y: 705, w: 74, h: 76},
@@ -31,16 +34,16 @@ var batImg = [
     { src: "images/cannon6.png", x: 642, y: 705, w: 74, h: 90},
     { src: "images/cannon7.png", x: 642, y: 705, w: 74, h: 94},
 ];
-var shellImg = [
- 	{ src: "images/bullet1.png", x: 642, y: 705, w: 24, h: 26, m : 1},
- 	{ src: "images/bullet2.png", x: 642, y: 705, w: 25, h: 29, m : 2},
- 	{ src: "images/bullet3.png", x: 642, y: 705, w: 27, h: 31, m : 4},
- 	{ src: "images/bullet4.png", x: 642, y: 705, w: 29, h: 33, m : 6},
- 	{ src: "images/bullet5.png", x: 642, y: 705, w: 30, h: 34, m : 8},
- 	{ src: "images/bullet6.png", x: 642, y: 705, w: 31, h: 35, m : 10},
- 	{ src: "images/bullet7.png", x: 642, y: 705, w: 32, h: 38, m : 15}
+imgSources.shellImg = [
+   	{ src: "images/bullet1.png", x: 642, y: 705, w: 24, h: 26, m : 1},
+   	{ src: "images/bullet2.png", x: 642, y: 705, w: 25, h: 29, m : 2},
+   	{ src: "images/bullet3.png", x: 642, y: 705, w: 27, h: 31, m : 4},
+   	{ src: "images/bullet4.png", x: 642, y: 705, w: 29, h: 33, m : 6},
+   	{ src: "images/bullet5.png", x: 642, y: 705, w: 30, h: 34, m : 8},
+   	{ src: "images/bullet6.png", x: 642, y: 705, w: 31, h: 35, m : 10},
+   	{ src: "images/bullet7.png", x: 642, y: 705, w: 32, h: 38, m : 15}
 ];
-var netImg = [
+imgSources.netImg = [
 	{ src: "images/web1.png", w: 116, h: 118 },
 	{ src: "images/web2.png", w: 137, h: 142 },
 	{ src: "images/web3.png", w: 156, h: 162 },
@@ -49,7 +52,7 @@ var netImg = [
 	{ src: "images/web6.png", w: 191, h: 181 },
 	{ src: "images/web7.png", w: 242, h: 244 },
 ];
-var fishImg = [  
+imgSources.fishImg = [  
     { src: "images/fish1.png", frm: 4, w: 55, h: 37 , c : 2},
     { src: "images/fish2.png", frm: 4, w: 78, h: 64 , c : 5},
     { src: "images/fish3.png", frm: 4, w: 72, h: 56 , c : 10},
@@ -63,21 +66,17 @@ var fishImg = [
     { src: "images/shark1.png", frm: 6, w: 509, h: 270 , c : 100},
     { src: "images/shark2.png", frm: 6, w: 516, h: 273 , c : 150}
 ];
-var coinImg = "images/coinText.png";
-var scoreImg = "images/number_black.png";
-document.body.onload = game;
- //存储图片链接信息的关联数组  
-function game(){
-	bgImg= new Image();
+imgSources.coinImg = [{src: "images/coinText.png"}];
+imgSources.scoreImg = [{src: "images/number_black.png"}];
+util.loadImage(imgSources,game);
+function game(images){
+	imgAll= images;
 	cvswidth = canvas.width;
 	cvsheight = canvas.height;
 	lastTime = Date.now();
 	deltaTime = 0;
-	bgImg.onload = function(){
-		battery = new batteryObj(batImg[battSize].src,batImg[battSize].x,batImg[battSize].y,batImg[battSize].w,batImg[battSize].h);
-		gameloop();
-	};
-	bgImg.src = "images/bg2.png";
+	battery = new batteryObj(imgAll.batImg[0],imgSources.batImg[0].x,imgSources.batImg[0].y,imgSources.batImg[0].w,imgSources.batImg[0].h);
+	gameloop();
 }
 function gameloop(){	//游戏循环，刷新界面
 	requestAnimFrame(gameloop);
@@ -85,12 +84,12 @@ function gameloop(){	//游戏循环，刷新界面
 	deltaTime = now - lastTime;
 	lastTime = now;
 	ctx.clearRect(0,0,cvswidth,cvsheight); //清除画布上残留的鱼群运动轨迹的每一帧
-	ctx.drawImage(bgImg,0,0,cvswidth,cvsheight);
+	ctx.drawImage(imgAll.bgImg[0],0,0,cvswidth,cvsheight);
 	addFishGroup();
 	drawFishNet();
 	drawCoin();
 	drawBar();
-	scoring(scoreImg,score);
+	scoring(imgAll.scoreImg[0],score);
 	isShut();
 	isOut(_fish);
 	isOut(_shell);
@@ -101,12 +100,11 @@ function gameloop(){	//游戏循环，刷新界面
 
 setInterval(function(){	//不定时实例化一个鱼对象
 	var type = util.getFishProbability(Math.random()*100);
-	var img = fishImg[type].src;
-	var w = fishImg[type].w;
-	var h = fishImg[type].h;
-	var maxFrame = fishImg[type].frm;
-	var c = fishImg[type].c;
-	var fish = new ofish(img, w, h , maxFrame, c);
+	var w = imgSources.fishImg[type].w;
+	var h = imgSources.fishImg[type].h;
+	var maxFrame = imgSources.fishImg[type].frm;
+	var c = imgSources.fishImg[type].c;
+	var fish = new ofish(imgAll.fishImg[type], w, h , maxFrame, c);
 	fish.init();
 	_fish.push(fish);
 },Math.random()*400 + 400);
@@ -121,6 +119,7 @@ function addFishGroup(){ //出现一群鱼
 			_fish[i].deadFrame();
 			_fish[i].draw();
 			if(_fish[i].frm >= _fish[i].maxFrm){
+				_fish[i] = null;
 				_fish.splice(i--,1);
 			}
 		}
@@ -128,13 +127,14 @@ function addFishGroup(){ //出现一群鱼
 }
 
 function drawBar(){
-	for(var i = 0; i<sources.length; i++){
-		bar = new toolBar(sources[i].src, sources[i].x, sources[i].y, sources[i].w, sources[i].h);
+	var len = imgAll.barImg.length;
+	for(var i = 0; i<len; i++){
+		bar = new toolBar(imgAll.barImg[i], imgSources.barImg[i].x, imgSources.barImg[i].y, imgSources.barImg[i].w, imgSources.barImg[i].h);
 		bar.draw();
 	}
 }
 function changeBattey(angle){
-	battery = new batteryObj(batImg[battSize].src,batImg[battSize].x,batImg[battSize].y,batImg[battSize].w,batImg[battSize].h);
+	battery = new batteryObj(imgAll.batImg[battSize],imgSources.batImg[battSize].x,imgSources.batImg[battSize].y,imgSources.batImg[battSize].w,imgSources.batImg[battSize].h);
 	battery.rotate = angle;
 }
 canvas.addEventListener("mousedown",function(e){
@@ -159,22 +159,22 @@ canvas.addEventListener("mousedown",function(e){
 			}
 			changeBattey(battery.rotate);
 		}else if(x<220 || x>=220 && y<705 || x>980){
-			if(score < shellImg[battSize].m){
+			if(score < imgSources.shellImg[battSize].m){
 				battSize--;
 				changeBattey(battery.rotate);
 			}else{
 				shutAudioInit();
-				var shell = new shellObj(shellImg[battSize].src,shellImg[battSize].x,shellImg[battSize].y,shellImg[battSize].w,shellImg[battSize].h,shellImg[battSize].m);
+				var shell = new shellObj(imgAll.shellImg[battSize], imgSources.shellImg[battSize].x, imgSources.shellImg[battSize].y, imgSources.shellImg[battSize].w, imgSources.shellImg[battSize].h, imgSources.shellImg[battSize].m);
 				_shell.push(shell);
 				var angle =  Math.PI - Math.atan2(x-battery.x,y-battery.y);
 				battery.rotate = angle;
 				shell.rotate = angle;
 				shell.shut = true;	//当发射一枚炮弹后开启move()
-				score -= shellImg[battSize].m;
+				score -= imgSources.shellImg[battSize].m;
 				netSize = battSize;
 			}
 		}
-	}else{
+	}else if(score==0 && _shell.length == 0){
 		overFlag = true;
 	}
 });
@@ -182,6 +182,7 @@ function isOut(_obj){ //是否出界
 	for(var i =0;i<_obj.length;i++){
 		var obj = _obj[i];
 		if(obj.x<-obj.w || obj.x>canvas.width+obj.w || obj.y<-obj.h || obj.y>canvas.width+obj.h){
+			_obj[i] = null;
 			_obj.splice(i--,1);	//删除第一个对象后由于改变了数组第二个对象的下标将要减少1
 		}
 	}
@@ -197,27 +198,28 @@ function isShut(){	//判断是否发射了炮弹，如果发射了炮弹就执�
 }
 
 function hasCollided(){	//是否碰撞
-	if(_fish.length && _shell.length){
-		for(var i =0;i<_fish.length;i++){
+	var fishLen = _fish.length;
+	if(fishLen && _shell.length){
+		for(var i =0;i<fishLen;i++){
 			if(_fish[i].alive){
 				for(var j =0;j<_shell.length;j++){
 					var rand = Math.random();
 					var dis = util.getDistance(_fish[i].x, _fish[i].y, _shell[j].x, _shell[j].y);
 					if(dis <= _fish[i].h/1.5){
 						hitAudioInit();
-						var net = new netObj(netImg[netSize].src, _shell[j].x, _shell[j].y, netImg[netSize].w, netImg[netSize].h);
+						var net = new netObj(imgAll.netImg[netSize], _shell[j].x, _shell[j].y, imgSources.netImg[netSize].w, imgSources.netImg[netSize].h);
 						_net.push(net);
 						if(rand <= _shell[j].m/_fish[i].c){ //命中概率
 							coinAudio();
 							score += _fish[i].c;
-							var coin = new coinObj(coinImg, _fish[i].x, _fish[i].y, _fish[i].c);
+							var coin = new coinObj(imgAll.coinImg[0], _fish[i].x, _fish[i].y, _fish[i].c);
 							_coin.push(coin);
 							_fish[i].frm = _fish[i].maxFrm;
 							_fish[i].maxFrm = _fish[i].maxFrm * 2 - 1;
 							_fish[i].timeInterval = 500;
 							_fish[i].alive = false;
-							_fish.splice(j--,1);
 						}
+						_shell[j] = null;
 						_shell.splice(j--,1);
 						break;
 					}
@@ -225,7 +227,6 @@ function hasCollided(){	//是否碰撞
 			}
 		}
 	}
-	
 }
 
 function drawFishNet(){		//绘制渔网
@@ -234,6 +235,7 @@ function drawFishNet(){		//绘制渔网
 		_net[i].draw();
 		_net[i].netTime += deltaTime;
 		if(_net[i].netTime >= _net[i].netInterval){
+			_net[i] = null;
 			_net.splice(i--,1);
 			break;
 		}
@@ -247,6 +249,7 @@ function drawCoin(){		//绘制金币
 		_coin[i].move();
 		_coin[i].coinTime += deltaTime;
 		if(_coin[i].coinTime >= _coin[i].coinInterval){
+			_coin[i] = null;
 			_coin.splice(i--,1);
 			break;
 		}
@@ -254,23 +257,21 @@ function drawCoin(){		//绘制金币
 }
 
 function scoring(scoreImg,score){
-	var img = new Image();
-	img.src = scoreImg;
 	var num = score.toString();
 	var len = num.length;
 	ctx.save();
 	ctx.translate(353,718);
 	for(var i = 1; i<=len;i++){
 		var frm = 9 - Number(num.substr([len-i],1));
-		ctx.drawImage(img,0,24*frm,20,24,-24*(i-1),0 ,20,24);
+		ctx.drawImage(scoreImg,0,24*frm,20,24,-24*(i-1),0 ,20,24);
 	}
 	ctx.restore();
 }
 
 function gameOver(flag){
 	if(flag){
-		ctx.fillStyle = "#fff";
-		ctx.font = "50px sans-serif";
+		ctx.fillStyle = "palevioletred";
+		ctx.font = "80px sans-serif";
 		ctx.fillText("游戏结束！", cvswidth/2 - 125,cvsheight/2);
 	}
 }

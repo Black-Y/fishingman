@@ -25,15 +25,13 @@ ofish.prototype.init = function(){
 	}
 }
 ofish.prototype.draw = function(){
-	var img = new Image();
-	img.src = this.img;
 	ctx.save();
 	ctx.translate(this.x,this.y);
 	ctx.rotate(util.d2a(this.rotate));
 	if(Math.abs(this.rotate) >= 90){//如果角度的绝对值大于90度 那么就翻转
 		ctx.scale(1, -1);
 	}
-	ctx.drawImage(img,0,this.h*this.frm,this.w,this.h,-this.w/2,-this.h/2,this.w,this.h);
+	ctx.drawImage(this.img,0,this.h*this.frm,this.w,this.h,-this.w/2,-this.h/2,this.w,this.h);
 	ctx.restore();
 }
 ofish.prototype.fishFrame = function(){
