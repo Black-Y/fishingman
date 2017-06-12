@@ -78,6 +78,16 @@ function game(images){
 	lastTime = Date.now();
 	deltaTime = 0;
 	battery = new batteryObj(imgAll.batImg[0],imgSources.batImg[0].x,imgSources.batImg[0].y,imgSources.batImg[0].w,imgSources.batImg[0].h);
+	setInterval(function(){	//不定时实例化一个鱼对象
+		var type = util.getFishProbability(Math.random()*100);
+		var w = imgSources.fishImg[type].w;
+		var h = imgSources.fishImg[type].h;
+		var maxFrame = imgSources.fishImg[type].frm;
+		var c = imgSources.fishImg[type].c;
+		var fish = new ofish(imgAll.fishImg[type], w, h , maxFrame, c);
+		fish.init();
+		_fish.push(fish);
+	},Math.random()*400 + 400);
 	gameloop();
 }
 function gameloop(){	//游戏循环，刷新界面
@@ -100,16 +110,7 @@ function gameloop(){	//游戏循环，刷新界面
 	gameOver(overFlag);
 }
 
-setInterval(function(){	//不定时实例化一个鱼对象
-	var type = util.getFishProbability(Math.random()*100);
-	var w = imgSources.fishImg[type].w;
-	var h = imgSources.fishImg[type].h;
-	var maxFrame = imgSources.fishImg[type].frm;
-	var c = imgSources.fishImg[type].c;
-	var fish = new ofish(imgAll.fishImg[type], w, h , maxFrame, c);
-	fish.init();
-	_fish.push(fish);
-},Math.random()*400 + 400);
+
 
 function addFishGroup(){ //出现一群鱼
 	for(var i =0;i<_fish.length;i++){
