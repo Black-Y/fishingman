@@ -1,4 +1,4 @@
-var canvas = document.getElementById("cvs");
+﻿var canvas = document.getElementById("cvs");
 var ctx = canvas.getContext("2d");
 var cvswidth;
 var cvsheight;
@@ -281,7 +281,7 @@ function gameOver(flag){
 //音频播放   
 var loadAudioLen=0;//已加载的声音数
 var AudioList={};//缓存已加载的声音
-var audiolen=7;//要加载的声音总数
+var audiolen=5;//要加载的声音总数
 //支持声音的类型
 (function(){
     var types=  {
