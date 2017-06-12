@@ -68,7 +68,9 @@ imgSources.fishImg = [
 ];
 imgSources.coinImg = [{src: "images/coinText.png"}];
 imgSources.scoreImg = [{src: "images/number_black.png"}];
-util.loadImage(imgSources,game);
+
+window.onload = util.loadImage(imgSources,game);
+
 function game(images){
 	imgAll= images;
 	cvswidth = canvas.width;
@@ -279,7 +281,7 @@ function gameOver(flag){
 //音频播放   
 var loadAudioLen=0;//已加载的声音数
 var AudioList={};//缓存已加载的声音
-var audiolen=2;//要加载的声音总数
+var audiolen=7;//要加载的声音总数
 //支持声音的类型
 (function(){
     var types=  {
